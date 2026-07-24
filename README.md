@@ -41,11 +41,6 @@ repository. Access is governed by the paper's *Data availability* statement.
 Everything under `example_data/` is fully synthetic and contains no patient
 information; it exists only to exercise the code paths and document the schemas.
 
-> ⚠️ Do not place real transcripts, notes, generations, or LLM-call caches under
-> version control. `data/`, `metrics_test/`, `outputs/`, `cache/`, and all
-> `.*_cache/` directories are git-ignored for this reason. Credentials
-> (`.env`, `keys*.json`) are git-ignored as well.
-
 ## Scope note
 
 The qualitative **LLM-as-a-judge** evaluation (main-text Table X and
