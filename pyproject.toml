@@ -1,0 +1,35 @@
+[project]
+name = "rehab-ambient-soap"
+version = "1.0.0"
+description = "Fact-level evaluation of ambient generative AI for clinical documentation in rehabilitation settings."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "numpy==1.26.4",
+    "pandas==2.1.4",
+    "scipy>=1.11",
+    "matplotlib==3.8.0",
+    "nltk>=3.8",
+    "textstat>=0.7",
+    "rouge-score>=0.1.2",
+    "bert-score>=0.3.13",
+    "torch==2.6.0",
+    "transformers==4.53.3",
+    "openai>=1.40",
+    "anthropic>=0.39",
+    "tqdm>=4.66",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+# Local 4-bit open-weight generation (MedGemma / Med42)
+local-models = ["accelerate", "bitsandbytes"]
+# scispaCy UMLS linker for the CUI cross-check
+scispacy = ["scispacy"]
+# AWS HealthScribe generation
+aws = ["boto3"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

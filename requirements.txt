@@ -1,0 +1,44 @@
+# ---------------------------------------------------------------------------
+# Core dependencies — needed for the text-similarity, claim-level, and
+# transcript-grounding analyses (the bulk of the reported results).
+# Versions match the environment used for the paper where pinned.
+# ---------------------------------------------------------------------------
+numpy==1.26.4
+pandas==2.1.4
+scipy>=1.11            # BCa bootstrap, Wilcoxon, Mann-Whitney (paper used 1.17)
+matplotlib==3.8.0
+
+# Text-similarity metrics
+nltk>=3.8
+textstat>=0.7
+rouge-score>=0.1.2
+bert-score>=0.3.13
+torch==2.6.0           # required by bert-score and the local open-weight models
+transformers==4.53.3
+
+# LLM API access (generation + GPT-4o decomposition/entailment judge)
+openai>=1.40
+anthropic>=0.39        # only for optional Claude generation
+tqdm>=4.66
+python-dotenv>=1.0
+
+# ---------------------------------------------------------------------------
+# Optional / task-specific dependencies (install as needed — see README).
+# These are heavy or require external resources (local UMLS index, GPUs, etc.)
+# and are NOT required to reproduce the core lexical/claim/grounding tables.
+# ---------------------------------------------------------------------------
+# Concept extraction (Table 2, ontology F1): MetaMapLite + a local UMLS index
+#   pip install pymetamaplite
+#
+# CUI cross-check (Supplementary): scispaCy UMLS linker
+#   pip install scispacy
+#   pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz
+#
+# Local 4-bit open-weight generation (MedGemma / Med42):
+#   pip install accelerate bitsandbytes
+#
+# JSL Text2SOAP generation:
+#   pip install johnsnowlabs pyspark
+#
+# AWS HealthScribe generation:
+#   pip install boto3

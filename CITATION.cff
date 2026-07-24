@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper."
+title: "Validation of Ambient Generative AI Models for Clinical Documentation in Rehabilitation Settings — evaluation code"
+authors:
+  - family-names: "TODO"
+    given-names: "TODO"
+# Add all co-authors above before release.
+version: "1.0.0"
+date-released: "2026-07-24"
+license: MIT
+repository-code: "https://github.com/<org>/rehab-ambient-soap"
+preferred-citation:
+  type: article
+  title: "Validation of Ambient Generative AI Models for Clinical Documentation in Rehabilitation Settings"
+  journal: "npj Digital Medicine"
+  year: 2026
+  authors:
+    - family-names: "TODO"
+      given-names: "TODO"

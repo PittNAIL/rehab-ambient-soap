@@ -1,0 +1,4 @@
+{
+  "api_key": "your-azure-openai-or-anthropic-api-key",
+  "base_url": "https://<your-resource-name>.openai.azure.com/openai/v1/"
+}
