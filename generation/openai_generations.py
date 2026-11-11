@@ -2,8 +2,15 @@
 """
 Generate clinical note summaries from a PyTorch Dataset using:
 
-1. GPT-5.5 via Azure OpenAI / Microsoft Foundry Responses API
-2. Claude Opus 4.6 via Microsoft Foundry Claude Messages API
+1. GPT-5 Pro via the Azure OpenAI Responses API (the system evaluated in the paper)
+2. A Claude model via the Microsoft Foundry Claude Messages API (optional; not
+   part of the paper's evaluation)
+
+Paper configuration (GPT-5 Pro): --provider azure-gpt5 --model <gpt-5-pro deployment>
+--use-soap-prompt --max-output-tokens 10000. The few-shot SOAP_PROMPT_PREFIX below
+(worked clinical examples) is the prompt GPT-5 Pro received; see Supplementary
+Note 1. Temperature is not user-configurable for this reasoning model, so it is
+not sent on the Responses API path.
 
 Input JSON expected:
 [
@@ -28,17 +35,40 @@ Each line contains:
 }
 """
 
-# export AZURE_OPENAI_gpt5_DEPLOYMENT="your-gpt-5.5-deployment-name"
+# Endpoints and keys come from the environment or .env (see .env.example).
 
 import argparse
 import json
 import os
-# Configure these via environment variables (see .env.example) rather than
-# hard-coding institutional endpoints. Example values:
-#   AZURE_OPENAI_ENDPOINT   = https://<your-resource>.openai.azure.com/openai/v1/
-#   AZURE_CLAUDE_BASE_URL   = https://<your-resource>.services.ai.azure.com/anthropic/
-#   AZURE_OPENAI_gpt5_DEPLOYMENT = <your-deployment-name>
-os.environ.setdefault('AZURE_OPENAI_gpt5_DEPLOYMENT', os.getenv('AZURE_OPENAI_gpt5_DEPLOYMENT', 'gpt-5-pro'))
+import re
+
+def _load_dotenv(path: str = ".env") -> None:
+    """
+    Populate os.environ from a .env file if present.
+
+    Credentials live in .env but nothing was reading it, so the script only
+    worked when the key happened to be exported in the shell. Values already
+    set in the environment win, so an explicit export still overrides the file.
+    No third-party dependency needed for KEY=value lines.
+    """
+    if not os.path.exists(path):
+        return
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+_load_dotenv()
+
+# setdefault, NOT assignment. This previously hard-assigned 'gpt-5.4-mini', which
+# silently overrode the environment. It happened to be harmless because --model
+# takes precedence, but running without --model would have sent every session to
+# mini while the operator believed they were using pro.
+os.environ.setdefault('AZURE_OPENAI_gpt5_DEPLOYMENT', 'gpt-5-pro')
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -110,6 +140,45 @@ SYSTEM_INSTRUCTION = (
     "Dialogue:\n"
 )
 
+_SPEAKER_RE = re.compile(r"SPK_(\d+)")
+
+
+def normalize_speakers(conversation: str, second_speaker: str = "Client") -> str:
+    """
+    Map diarization labels to readable roles.
+
+    Previously only SPK_0/SPK_1 were replaced, so a raw "SPK_2:" leaked into the
+    prompt for the 9 of 45 sessions in the earlier corpus that have a third or
+    fourth speaker (family member, aide, second therapist). Those now become
+    "Other Speaker 1", "Other Speaker 2", ... matching the open-weight runner
+    exactly, so every system sees identical transcripts.
+
+    ADAPTS contains only SPK_0/SPK_1, so this is a no-op there and does not
+    change the already-generated ADAPTS GPT-5 output.
+    """
+    def repl(m: "re.Match[str]") -> str:
+        n = int(m.group(1))
+        if n == 0:
+            return "Doctor"
+        if n == 1:
+            return second_speaker
+        return f"Other Speaker {n - 1}"
+
+    return _SPEAKER_RE.sub(repl, conversation)
+
+
+def build_prompt(conversation: str, use_soap_prompt: bool = False) -> str:
+    """
+    Prepend the worked-example SOAP instruction to the transcript.
+
+    SYSTEM_INSTRUCTION is sent separately as the system message and already ends
+    with "Dialogue:\n", so the transcript follows the prefix directly.
+    """
+    if use_soap_prompt:
+        return SOAP_PROMPT_PREFIX + conversation
+    return conversation
+
+
 class ClinicalNotesDataset(Dataset):
     def __init__(self, input_path: str, use_soap_prompt: bool = False):
         with open(input_path, "r", encoding="utf-8") as f:
@@ -122,25 +191,13 @@ class ClinicalNotesDataset(Dataset):
     def __getitem__(self, idx: int) -> Dict[str, Any]:
         row = self.rows[idx]
 
-        if self.use_soap_prompt:
-            conversation = (
-                row["conversation"]
-                .replace("SPK_0", "Doctor")
-                .replace("SPK_1", "Client")
-            )
-        else:
-            conversation = (
-                row["conversation"]
-                .replace("SPK_0", "Doctor")
-                .replace("SPK_1", "Patient")
-            )
+        second = "Client" if self.use_soap_prompt else "Patient"
+        conversation = normalize_speakers(row["conversation"], second)
 
-        # prompt = build_prompt(
-        #     conversation=conversation,
-        #     use_soap_prompt=self.use_soap_prompt,
-        # )
-        
-        prompt = conversation
+        prompt = build_prompt(
+            conversation=conversation,
+            use_soap_prompt=self.use_soap_prompt,
+        )
 
         return {
             "idx": row["idx"],
@@ -188,7 +245,9 @@ class FoundryNoteGenerator:
         if provider == "azure-gpt5":
             self.model = model or os.getenv("AZURE_OPENAI_gpt5_DEPLOYMENT", "gpt-5")
             azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
-            azure_key = os.getenv("OPENAI_API_KEY")
+            # .env defines AZURE_OPENAI_API_KEY; OPENAI_API_KEY kept as a fallback
+            # so existing shell exports continue to work.
+            azure_key = os.getenv("AZURE_OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 
             if not azure_endpoint:
                 raise EnvironmentError("Missing AZURE_OPENAI_ENDPOINT")
@@ -535,8 +594,5 @@ def main() -> None:
 if __name__ == "__main__":
     main()
     
-# python openai_generations.py   --input-path data/json_dataset.json   --output-path outputs/gpt5-pro/gpt5-pro_soap_preds.jsonl   --final-json-path outputs/gpt5-pro/gpt5-pro_soap_preds.json   --provider azure-gpt5-pro   --model gpt-5-pro  --use-soap-prompt   --temperature 0.2   --max-output-tokens 10000
-
-# python openai_generations.py   --input-path data/json_dataset.json   --output-path outputs/gpt5-pro/gpt5.4-mini_soap_preds.jsonl   --final-json-path outputs/gpt5.4-mini/gpt5.4-mini_soap_preds.json   --provider azure-gpt5.4-mini   --model gpt-5.4-mini  --use-soap-prompt   --temperature 0.2   --max-output-tokens 10000
-
-# python openai_generations.py   --input-path data/json_dataset.json   --output-path outputs/claude-opus-4-7/claude-opus-4-7_soap_preds.jsonl   --final-json-path outputs/claude-opus-4-7/claude-opus-4-7_soap_preds.json   --provider azure-claude-opus-4-7   --model claude-opus-4-7  --use-soap-prompt   --temperature 0.2   --max-output-tokens 10000
+# Paper run (repeat with --input-path data/adapts_dataset.json for Study 2):
+# python generation/openai_generations.py --input-path data/json_dataset.json #   --output-path outputs/encompass/gpt5-pro_encompass_preds.jsonl #   --final-json-path outputs/encompass/gpt5-pro_encompass_preds.json #   --provider azure-gpt5 --model <gpt-5-pro deployment> --use-soap-prompt #   --max-output-tokens 10000

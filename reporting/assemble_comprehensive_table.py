@@ -98,6 +98,8 @@ def build(convention):
 
         rows.append({
             "name": name,
+            # empty-only: count of non-empty notes; degenerate: count of non-degenerate notes.
+            # Either way this is the denominator the metrics in the row were averaged over.
             "n_valid": res["num_valid"],
             "n_total": res["num_records"],
             "rouge1": g("rouge1_f1"),
@@ -123,10 +125,15 @@ def cell(t, nd):
     return f"{m:.{nd}f} [{lo:.{nd}f}, {hi:.{nd}f}]"
 
 
-def md_table(rows):
+def n_header(convention):
+    """The count column names the filter that produced it, not a generic 'Valid'."""
+    return "Non-degenerate notes" if convention == "degenerate" else "Non-empty notes"
+
+
+def md_table(rows, convention):
     out = []
     out.append("**Panel A — Similarity to therapist reference note** (mean [95% CI]; higher = better)\n")
-    out.append("| Model | Valid | ROUGE-1 | ROUGE-L | BERTScore | Jaccard | Ontology F1 | Ontology IoU |")
+    out.append(f"| Model | {n_header(convention)} | ROUGE-1 | ROUGE-L | BERTScore | Jaccard | Ontology F1 | Ontology IoU |")
     out.append("|---|---|---|---|---|---|---|---|")
     for r in rows:
         out.append("| {name} | {v} | {a} | {b} | {c} | {d} | {e} | {f} |".format(
@@ -150,17 +157,18 @@ def latex_table(rows, convention):
             return r"--"
         return rf"{m:.{nd}f} \tiny[{lo:.{nd}f}, {hi:.{nd}f}]"
     valid_word = "non-degenerate" if convention == "degenerate" else "non-empty"
+    nh = n_header(convention)
     lines = []
     lines.append(r"% Comprehensive table (" + convention + r" convention). Requires \usepackage{booktabs}.")
     lines.append(r"\begin{table*}[t]\centering\footnotesize")
     lines.append(r"\caption{Lexical, semantic, and ontology-based similarity between AI-generated and therapist reference notes, "
                  r"and note-characterization metrics. Values are per-note means with 95\% BCa bootstrap CIs (10{,}000 resamples) "
-                 r"over the " + valid_word + r" valid notes per system.}")
+                 r"over the " + valid_word + r" notes per system.}")
     lines.append(r"\label{tab:comprehensive}")
     # Panel A
     lines.append(r"\begin{tabular}{lccccccc}")
     lines.append(r"\toprule")
-    lines.append(r"Model & Valid & ROUGE-1 & ROUGE-L & BERTScore & Jaccard & Ontology F1 & Ontology IoU \\")
+    lines.append("Model & " + nh + r" & ROUGE-1 & ROUGE-L & BERTScore & Jaccard & Ontology F1 & Ontology IoU \\")
     lines.append(r"\midrule")
     for r in rows:
         lines.append("{name} & {v} & {a} & {b} & {cc} & {d} & {e} & {f} \\\\".format(
@@ -183,7 +191,7 @@ def latex_table(rows, convention):
 if __name__ == "__main__":
     for conv in ["degenerate", "empty-only"]:
         rows = build(conv)
-        md = md_table(rows)
+        md = md_table(rows, conv)
         tex = latex_table(rows, conv)
         (QUANT / f"comprehensive_table_{conv}.md").write_text(md, encoding="utf-8")
         (QUANT / f"comprehensive_table_{conv}.tex").write_text(tex, encoding="utf-8")

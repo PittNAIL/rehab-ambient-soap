@@ -29,7 +29,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from collections import namedtuple
+from collections import Counter, namedtuple
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
@@ -37,6 +37,46 @@ import nltk
 import numpy as np
 
 from metamaplite import MetaMapLite, result_utils
+from metamaplite.find_longest_match import token_list_utils as _tlu
+
+
+# ── span-length cap ────────────────────────────────────────────────────────────
+# metamaplite's create_sublists_opt() enumerates EVERY sublist of the token list:
+# for each start position, spans of every length out to the end of the note.
+# That is N(N+1)/2 spans, and each is string-normalised at a length averaging
+# ~N/3 tokens, so total work is O(N^3). A 440-token note yields 97,020 spans,
+# most of them hundreds of tokens long.
+#
+# No UMLS concept is that long -- the longest realistic ones are HCPCS-style
+# descriptions of roughly a dozen tokens. Capping the span window makes the
+# enumeration O(N * cap), i.e. linear in note length, and drops only candidate
+# spans that could never match a concept.
+#
+# Ordering is preserved (longest-first within each window) so results are
+# identical to upstream, not merely equivalent. Verified by re-running a
+# completed model and diffing; see --max-span-tokens.
+_MAX_SPAN_TOKENS = 0  # 0 disables the cap (upstream behaviour)
+_ORIG_CREATE_SUBLISTS = _tlu.create_sublists_opt
+
+
+def _create_sublists_capped(tokenlist):
+    cap = _MAX_SPAN_TOKENS
+    if not cap:
+        return _ORIG_CREATE_SUBLISTS(tokenlist)
+    out = []
+    n = len(tokenlist)
+    for i in range(n):
+        hi = min(i + cap, n)
+        for j in range(hi, i, -1):        # longest-first, as upstream
+            out.append(tokenlist[i:j])
+    return out
+
+
+def set_max_span_tokens(cap: int) -> None:
+    global _MAX_SPAN_TOKENS
+    _MAX_SPAN_TOKENS = int(cap or 0)
+    _tlu.create_sublists_opt = _create_sublists_capped
+
 from pathlib import Path
 
 
@@ -182,6 +222,7 @@ def extract_cuis(
     metamap_lite: MetaMapLite,
     lowercase_text: bool = False,
     return_debug: bool = False,
+    return_counts: bool = False,
 ) -> Set[str] | Tuple[Set[str], List[Dict[str, Any]]]:
     """
     Extract unique UMLS CUIs from text using pymetamaplite.
@@ -211,6 +252,8 @@ def extract_cuis(
         CUIs and debug information.
     """
     if not text or not text.strip():
+        if return_counts:
+            return set(), Counter(), {}
         return (set(), []) if return_debug else set()
 
     if lowercase_text:
@@ -232,11 +275,19 @@ def extract_cuis(
 
     cuis: Set[str] = set()
     debug_rows: List[Dict[str, Any]] = []
+    # Table 2 reports TOTAL detection counts (repeats within a note included),
+    # which the deduplicated `cuis` set cannot express. Count one detection per
+    # (matched span, CUI) pair -- not per posting, since a single span often has
+    # several postings resolving to the same CUI via different source vocabs.
+    cui_counts: "Counter[str]" = Counter()
+    cui_semtypes: Dict[str, List[str]] = {}
 
     for term in matches:
         term_text = getattr(term, "text", None)
         term_start = getattr(term, "start", None)
         term_end = getattr(term, "end", None)
+
+        term_cuis: Set[str] = set()
 
         for post in getattr(term, "postings", []):
             cui = getattr(post, "cui", None)
@@ -245,6 +296,12 @@ def extract_cuis(
                 continue
 
             cuis.add(cui)
+            term_cuis.add(cui)
+
+            if cui not in cui_semtypes:
+                st = getattr(post, "semtypeset", None)
+                if st:
+                    cui_semtypes[cui] = sorted(st) if not isinstance(st, str) else [st]
 
             if return_debug:
                 debug_rows.append(
@@ -259,6 +316,12 @@ def extract_cuis(
                         "semantic_types": getattr(post, "semtypeset", None),
                     }
                 )
+
+        for c in term_cuis:
+            cui_counts[c] += 1
+
+    if return_counts:
+        return cuis, cui_counts, cui_semtypes
 
     return (cuis, debug_rows) if return_debug else cuis
 
@@ -344,6 +407,9 @@ def evaluate_items(
         Aggregate metrics and per-example results.
     """
     per_item_results: List[Dict[str, Any]] = []
+    # CUI -> UMLS semantic types, accumulated across the file so Table 2 can
+    # report semantic groups without a second MetaMapLite pass.
+    semtype_map: Dict[str, List[str]] = {}
 
     for idx, item in enumerate(items):
         pred_note = item.get(pred_key, "") or ""
@@ -356,8 +422,14 @@ def evaluate_items(
         if skip_empty_gold and not gold_note.strip():
             continue
 
-        pred_cuis = extract_cuis(pred_note, metamap_lite)
-        gold_cuis = extract_cuis(gold_note, metamap_lite)
+        pred_cuis, pred_counts, pred_semtypes = extract_cuis(
+            pred_note, metamap_lite, return_counts=True
+        )
+        gold_cuis, gold_counts, gold_semtypes = extract_cuis(
+            gold_note, metamap_lite, return_counts=True
+        )
+        semtype_map.update(gold_semtypes)
+        semtype_map.update(pred_semtypes)
 
         result = calculate_cui_coverage(pred_cuis, gold_cuis)
 
@@ -373,6 +445,9 @@ def evaluate_items(
                 "pred_cuis": sorted(result.pred_cuis),
                 "gold_cuis": sorted(result.gold_cuis),
                 "common_cuis": sorted(result.common_cuis),
+                # Detection counts incl. within-note repeats (Table 2).
+                "pred_cui_counts": dict(sorted(pred_counts.items())),
+                "gold_cui_counts": dict(sorted(gold_counts.items())),
             }
         )
 
@@ -386,6 +461,7 @@ def evaluate_items(
         "mean_precision_coverage": float(np.mean(precision_values)) if precision_values else 0.0,
         "mean_f1_coverage": float(np.mean(f1_values)) if f1_values else 0.0,
         "per_item": per_item_results,
+        "cui_semtypes": dict(sorted(semtype_map.items())),
     }
 
     return aggregate
@@ -470,12 +546,29 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--max-span-tokens",
+        dest="max_span_tokens",
+        type=int,
+        default=0,
+        help=(
+            "Cap candidate concept spans to this many tokens (0 = upstream "
+            "behaviour). Upstream enumerates all N(N+1)/2 spans per note, which "
+            "is O(N^3) overall; a cap makes it linear. 25 is well above the "
+            "longest realistic UMLS term. Verify with a completed model before "
+            "relying on it."
+        ),
+    )
+    parser.add_argument(
         "--no_cache",
         action="store_true",
         help="Disable MetaMapLite lookup cache.",
     )
 
     args = parser.parse_args()
+
+    if args.max_span_tokens:
+        set_max_span_tokens(args.max_span_tokens)
+        print(f"span cap: {args.max_span_tokens} tokens")
 
     ensure_nltk_resources()
 
