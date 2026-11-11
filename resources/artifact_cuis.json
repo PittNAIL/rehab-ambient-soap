@@ -1,0 +1,794 @@
+{
+  "C0007366": {
+    "rule": "A gene/language collision",
+    "name": "Catalan language"
+  },
+  "C0008120": {
+    "rule": "A gene/language collision",
+    "name": "Chinese Language"
+  },
+  "C0010969": {
+    "rule": "A gene/language collision",
+    "name": "Danish language"
+  },
+  "C0018017": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "objective (goal)"
+  },
+  "C0022275": {
+    "rule": "A gene/language collision",
+    "name": "Italian language"
+  },
+  "C0023008": {
+    "rule": "A gene/language collision",
+    "name": "Languages"
+  },
+  "C0037556": {
+    "rule": "D confirmed shorthand collision",
+    "name": "sodium tetradecyl sulfate"
+  },
+  "C0037750": {
+    "rule": "A gene/language collision",
+    "name": "Spanish Language"
+  },
+  "C0205117": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Adjacent"
+  },
+  "C0205370": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Unspecified"
+  },
+  "C0205394": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Other"
+  },
+  "C0270724": {
+    "rule": "D confirmed shorthand collision",
+    "name": "Infantile Neuroaxonal Dystrophy"
+  },
+  "C0332232": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Approximate"
+  },
+  "C0332282": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Following"
+  },
+  "C0332287": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "In addition to"
+  },
+  "C0347984": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "During"
+  },
+  "C0376245": {
+    "rule": "A gene/language collision",
+    "name": "English Language"
+  },
+  "C0376246": {
+    "rule": "A gene/language collision",
+    "name": "French language"
+  },
+  "C0424925": {
+    "rule": "A gene/language collision",
+    "name": "Punjabi language"
+  },
+  "C0439505": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "per day"
+  },
+  "C0439531": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "per period (qualifier value)"
+  },
+  "C0456693": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "per 30 minutes"
+  },
+  "C0521125": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Preposition For"
+  },
+  "C0541736": {
+    "rule": "A gene/language collision",
+    "name": "spelling"
+  },
+  "C0574244": {
+    "rule": "A gene/language collision",
+    "name": "Carib language"
+  },
+  "C0574359": {
+    "rule": "A gene/language collision",
+    "name": "Sandawe language"
+  },
+  "C0574367": {
+    "rule": "A gene/language collision",
+    "name": "Buginese language"
+  },
+  "C0574374": {
+    "rule": "A gene/language collision",
+    "name": "Madurese language"
+  },
+  "C0574377": {
+    "rule": "D confirmed shorthand collision",
+    "name": "Minangkabau Language"
+  },
+  "C0574418": {
+    "rule": "A gene/language collision",
+    "name": "Santali language"
+  },
+  "C0574439": {
+    "rule": "A gene/language collision",
+    "name": "Fang language"
+  },
+  "C0574443": {
+    "rule": "A gene/language collision",
+    "name": "Herero language"
+  },
+  "C0574467": {
+    "rule": "A gene/language collision",
+    "name": "Rundi language"
+  },
+  "C0574497": {
+    "rule": "A gene/language collision",
+    "name": "Edo Language"
+  },
+  "C0574534": {
+    "rule": "A gene/language collision",
+    "name": "Delaware Language"
+  },
+  "C0678226": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Due to"
+  },
+  "C0751608": {
+    "rule": "A gene/language collision",
+    "name": "cDNA Library"
+  },
+  "C0812304": {
+    "rule": "A gene/language collision",
+    "name": "GLI1 gene"
+  },
+  "C0872147": {
+    "rule": "A gene/language collision",
+    "name": "DNA Library"
+  },
+  "C1272688": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "status - In progress"
+  },
+  "C1301732": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Planned"
+  },
+  "C1336636": {
+    "rule": "A gene/language collision",
+    "name": "TLR4 gene"
+  },
+  "C1336646": {
+    "rule": "A gene/language collision",
+    "name": "TNFSF10 gene"
+  },
+  "C1366510": {
+    "rule": "A gene/language collision",
+    "name": "LIMS1 gene"
+  },
+  "C1412132": {
+    "rule": "A gene/language collision",
+    "name": "ACP2 gene"
+  },
+  "C1412999": {
+    "rule": "A gene/language collision",
+    "name": "C4A gene"
+  },
+  "C1413336": {
+    "rule": "A gene/language collision",
+    "name": "CEL gene"
+  },
+  "C1413337": {
+    "rule": "A gene/language collision",
+    "name": "CELP gene"
+  },
+  "C1413357": {
+    "rule": "A gene/language collision",
+    "name": "CFLAR gene"
+  },
+  "C1413503": {
+    "rule": "A gene/language collision",
+    "name": "CLOCK gene"
+  },
+  "C1413560": {
+    "rule": "A gene/language collision",
+    "name": "CNTN2 gene"
+  },
+  "C1413622": {
+    "rule": "A gene/language collision",
+    "name": "CORO1A gene"
+  },
+  "C1414273": {
+    "rule": "A gene/language collision",
+    "name": "EEF1A2 gene"
+  },
+  "C1415458": {
+    "rule": "A gene/language collision",
+    "name": "HADH gene"
+  },
+  "C1416599": {
+    "rule": "A gene/language collision",
+    "name": "KCNK6 gene"
+  },
+  "C1416990": {
+    "rule": "A gene/language collision",
+    "name": "MALL gene"
+  },
+  "C1418208": {
+    "rule": "A gene/language collision",
+    "name": "OXT gene"
+  },
+  "C1418262": {
+    "rule": "A gene/language collision",
+    "name": "PALM gene"
+  },
+  "C1418729": {
+    "rule": "A gene/language collision",
+    "name": "POLE gene"
+  },
+  "C1418885": {
+    "rule": "A gene/language collision",
+    "name": "PREP gene"
+  },
+  "C1418983": {
+    "rule": "A gene/language collision",
+    "name": "CYTIP gene"
+  },
+  "C1419209": {
+    "rule": "A gene/language collision",
+    "name": "RAB3IL1 gene"
+  },
+  "C1420005": {
+    "rule": "A gene/language collision",
+    "name": "SGCA gene"
+  },
+  "C1420042": {
+    "rule": "A gene/language collision",
+    "name": "SHOX2 gene"
+  },
+  "C1421225": {
+    "rule": "A gene/language collision",
+    "name": "TUB gene"
+  },
+  "C1421951": {
+    "rule": "A gene/language collision",
+    "name": "MIXL1 gene"
+  },
+  "C1423524": {
+    "rule": "A gene/language collision",
+    "name": "NCKIPSD gene"
+  },
+  "C1423800": {
+    "rule": "A gene/language collision",
+    "name": "CTNNBL1 gene"
+  },
+  "C1424619": {
+    "rule": "A gene/language collision",
+    "name": "CD96 gene"
+  },
+  "C1424886": {
+    "rule": "A gene/language collision",
+    "name": "PCSK1N gene"
+  },
+  "C1425030": {
+    "rule": "A gene/language collision",
+    "name": "PITRM1 gene"
+  },
+  "C1425074": {
+    "rule": "A gene/language collision",
+    "name": "UCN3 gene"
+  },
+  "C1425261": {
+    "rule": "A gene/language collision",
+    "name": "BMP2K gene"
+  },
+  "C1425484": {
+    "rule": "A gene/language collision",
+    "name": "SESTD1 gene"
+  },
+  "C1425726": {
+    "rule": "A gene/language collision",
+    "name": "TAMALIN gene"
+  },
+  "C1427618": {
+    "rule": "A gene/language collision",
+    "name": "THEMIS gene"
+  },
+  "C1428114": {
+    "rule": "A gene/language collision",
+    "name": "TBATA gene"
+  },
+  "C1428437": {
+    "rule": "A gene/language collision",
+    "name": "INIP gene"
+  },
+  "C1442758": {
+    "rule": "A gene/language collision",
+    "name": "SFTPC gene"
+  },
+  "C1456461": {
+    "rule": "A gene/language collision",
+    "name": "HAS1 gene"
+  },
+  "C1517320": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "From"
+  },
+  "C1518425": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Not Otherwise Specified"
+  },
+  "C1538057": {
+    "rule": "A gene/language collision",
+    "name": "NFKBIZ gene"
+  },
+  "C1538279": {
+    "rule": "A gene/language collision",
+    "name": "ANKHD1 gene"
+  },
+  "C1540238": {
+    "rule": "A gene/language collision",
+    "name": "TXNDC15 gene"
+  },
+  "C1550453": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Act Mood - intent"
+  },
+  "C1571704": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Act Mood - Goal"
+  },
+  "C1705569": {
+    "rule": "A gene/language collision",
+    "name": "HPSE wt Allele"
+  },
+  "C1705581": {
+    "rule": "A gene/language collision",
+    "name": "TLR4 wt Allele"
+  },
+  "C1705587": {
+    "rule": "A gene/language collision",
+    "name": "OXT wt Allele"
+  },
+  "C1705690": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "With - dosing instruction fragment"
+  },
+  "C1705827": {
+    "rule": "A gene/language collision",
+    "name": "SAT1 wt Allele"
+  },
+  "C1706548": {
+    "rule": "A gene/language collision",
+    "name": "GLI1 wt Allele"
+  },
+  "C1706551": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "During - dosing instruction fragment"
+  },
+  "C1707156": {
+    "rule": "A gene/language collision",
+    "name": "CTBP1 wt Allele"
+  },
+  "C1708624": {
+    "rule": "A gene/language collision",
+    "name": "LIMS1 wt Allele"
+  },
+  "C1717991": {
+    "rule": "A gene/language collision",
+    "name": "Language.primary"
+  },
+  "C1822614": {
+    "rule": "A gene/language collision",
+    "name": "SAT1 gene"
+  },
+  "C1822717": {
+    "rule": "A gene/language collision",
+    "name": "SHE gene"
+  },
+  "C1823381": {
+    "rule": "A gene/language collision",
+    "name": "TMEM121 gene"
+  },
+  "C1823816": {
+    "rule": "A gene/language collision",
+    "name": "C1orf210 gene"
+  },
+  "C1824356": {
+    "rule": "A gene/language collision",
+    "name": "RESF1 gene"
+  },
+  "C1824370": {
+    "rule": "A gene/language collision",
+    "name": "SPRING1 gene"
+  },
+  "C1824528": {
+    "rule": "A gene/language collision",
+    "name": "CARTPT gene"
+  },
+  "C1824539": {
+    "rule": "A gene/language collision",
+    "name": "CC2D1A gene"
+  },
+  "C1825121": {
+    "rule": "A gene/language collision",
+    "name": "PIMREG gene"
+  },
+  "C1825233": {
+    "rule": "A gene/language collision",
+    "name": "OTULIN gene"
+  },
+  "C1825598": {
+    "rule": "A gene/language collision",
+    "name": "IMPACT gene"
+  },
+  "C1825644": {
+    "rule": "A gene/language collision",
+    "name": "KCNIP3 gene"
+  },
+  "C1825648": {
+    "rule": "A gene/language collision",
+    "name": "KIAA0100 gene"
+  },
+  "C1825907": {
+    "rule": "A gene/language collision",
+    "name": "LRRCC1 gene"
+  },
+  "C1825977": {
+    "rule": "A gene/language collision",
+    "name": "METTL7B gene"
+  },
+  "C1826583": {
+    "rule": "A gene/language collision",
+    "name": "PICK1 gene"
+  },
+  "C1826596": {
+    "rule": "A gene/language collision",
+    "name": "PLEKHG5 gene"
+  },
+  "C1826706": {
+    "rule": "A gene/language collision",
+    "name": "PRPF6 gene"
+  },
+  "C1845191": {
+    "rule": "A gene/language collision",
+    "name": "STK26 gene"
+  },
+  "C1864909": {
+    "rule": "A gene/language collision",
+    "name": "ARHGEF40 gene"
+  },
+  "C1883708": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Then"
+  },
+  "C2239359": {
+    "rule": "A gene/language collision",
+    "name": "DNLZ gene"
+  },
+  "C2239819": {
+    "rule": "A gene/language collision",
+    "name": "PIK3IP1 gene"
+  },
+  "C2347166": {
+    "rule": "D confirmed shorthand collision",
+    "name": "Minute Unit of Plane Angle"
+  },
+  "C2681631": {
+    "rule": "A gene/language collision",
+    "name": "KIDINS220 gene"
+  },
+  "C2982394": {
+    "rule": "A gene/language collision",
+    "name": "TARP Gene"
+  },
+  "C2985160": {
+    "rule": "A gene/language collision",
+    "name": "ARID1A wt Allele"
+  },
+  "C2985260": {
+    "rule": "A gene/language collision",
+    "name": "NUTM1 wt Allele"
+  },
+  "C2986676": {
+    "rule": "A gene/language collision",
+    "name": "TNFSF13B wt Allele"
+  },
+  "C3272498": {
+    "rule": "A gene/language collision",
+    "name": "CFLAR wt Allele"
+  },
+  "C3273379": {
+    "rule": "A gene/language collision",
+    "name": "CARS1 wt Allele"
+  },
+  "C3273411": {
+    "rule": "A gene/language collision",
+    "name": "NCKIPSD wt Allele"
+  },
+  "C3469826": {
+    "rule": "A gene/language collision",
+    "name": "SLC35G1 gene"
+  },
+  "C3470073": {
+    "rule": "A gene/language collision",
+    "name": "DESI1 gene"
+  },
+  "C3538766": {
+    "rule": "A gene/language collision",
+    "name": "CD244 wt Allele"
+  },
+  "C3538817": {
+    "rule": "A gene/language collision",
+    "name": "DTL wt Allele"
+  },
+  "C3538851": {
+    "rule": "A gene/language collision",
+    "name": "REG3A wt Allele"
+  },
+  "C3538895": {
+    "rule": "A gene/language collision",
+    "name": "SEPTIN4 wt Allele"
+  },
+  "C3539536": {
+    "rule": "A gene/language collision",
+    "name": "ARID1B wt Allele"
+  },
+  "C3539690": {
+    "rule": "A gene/language collision",
+    "name": "MAP3K13 wt Allele"
+  },
+  "C3540469": {
+    "rule": "A gene/language collision",
+    "name": "AICDA wt Allele"
+  },
+  "C3540471": {
+    "rule": "A gene/language collision",
+    "name": "CD69 wt Allele"
+  },
+  "C3540475": {
+    "rule": "A gene/language collision",
+    "name": "CXADR wt Allele"
+  },
+  "C3540509": {
+    "rule": "A gene/language collision",
+    "name": "CEBPB wt Allele"
+  },
+  "C3540603": {
+    "rule": "A gene/language collision",
+    "name": "PADI4 wt Allele"
+  },
+  "C3540815": {
+    "rule": "A gene/language collision",
+    "name": "NSMAF wt Allele"
+  },
+  "C3543315": {
+    "rule": "A gene/language collision",
+    "name": "ASH1L-AS1 gene"
+  },
+  "C3650872": {
+    "rule": "B no semantic type (parser fragment)",
+    "name": "No Falls"
+  },
+  "C3715025": {
+    "rule": "A gene/language collision",
+    "name": "TNFSF13 wt Allele"
+  },
+  "C3715044": {
+    "rule": "A gene/language collision",
+    "name": "AKR1A1 wt Allele"
+  },
+  "C3810521": {
+    "rule": "A gene/language collision",
+    "name": "GPER1 wt Allele"
+  },
+  "C3811749": {
+    "rule": "A gene/language collision",
+    "name": "NR1I3 wt Allele"
+  },
+  "C3812285": {
+    "rule": "A gene/language collision",
+    "name": "SEMA6A wt Allele"
+  },
+  "C3812826": {
+    "rule": "A gene/language collision",
+    "name": "PAGR1 wt Allele"
+  },
+  "C3887962": {
+    "rule": "C function word / discourse / dosing fragment",
+    "name": "Per (qualifier)"
+  },
+  "C3889123": {
+    "rule": "A gene/language collision",
+    "name": "SMG1 wt Allele"
+  },
+  "C3889135": {
+    "rule": "A gene/language collision",
+    "name": "NR1H4 wt Allele"
+  },
+  "C3889229": {
+    "rule": "A gene/language collision",
+    "name": "FOXD3-AS1 gene"
+  },
+  "C3889432": {
+    "rule": "A gene/language collision",
+    "name": "CES2 wt Allele"
+  },
+  "C3890191": {
+    "rule": "A gene/language collision",
+    "name": "AGRP wt Allele"
+  },
+  "C3890193": {
+    "rule": "A gene/language collision",
+    "name": "CD5L wt Allele"
+  },
+  "C3890893": {
+    "rule": "A gene/language collision",
+    "name": "SLC6A2 wt Allele"
+  },
+  "C4084890": {
+    "rule": "A gene/language collision",
+    "name": "GUCY2C wt Allele"
+  },
+  "C4085337": {
+    "rule": "A gene/language collision",
+    "name": "HLA-DOB wt Allele"
+  },
+  "C4085339": {
+    "rule": "A gene/language collision",
+    "name": "TRAIP wt Allele"
+  },
+  "C4283853": {
+    "rule": "A gene/language collision",
+    "name": "C4A wt Allele"
+  },
+  "C4284302": {
+    "rule": "A gene/language collision",
+    "name": "EHD1 wt Allele"
+  },
+  "C4284725": {
+    "rule": "A gene/language collision",
+    "name": "HHIP wt Allele"
+  },
+  "C4284728": {
+    "rule": "A gene/language collision",
+    "name": "SPHKAP wt Allele"
+  },
+  "C4319962": {
+    "rule": "A gene/language collision",
+    "name": "PITRM1 wt Allele"
+  },
+  "C4321205": {
+    "rule": "A gene/language collision",
+    "name": "MELTF-AS1 gene"
+  },
+  "C4321252": {
+    "rule": "D confirmed shorthand collision",
+    "name": "WWOX wt Allele"
+  },
+  "C4321342": {
+    "rule": "A gene/language collision",
+    "name": "SMIM24 wt Allele"
+  },
+  "C4521367": {
+    "rule": "A gene/language collision",
+    "name": "TNFSF14 wt Allele"
+  },
+  "C4521506": {
+    "rule": "A gene/language collision",
+    "name": "PICK1 wt Allele"
+  },
+  "C4522312": {
+    "rule": "A gene/language collision",
+    "name": "CAP1 gene"
+  },
+  "C4553517": {
+    "rule": "A gene/language collision",
+    "name": "CARTPT wt Allele"
+  },
+  "C4723660": {
+    "rule": "A gene/language collision",
+    "name": "NFKBIZ wt Allele"
+  },
+  "C4723667": {
+    "rule": "A gene/language collision",
+    "name": "TNIP1 wt Allele"
+  },
+  "C4723683": {
+    "rule": "A gene/language collision",
+    "name": "EPHB6 wt Allele, Human"
+  },
+  "C4723858": {
+    "rule": "A gene/language collision",
+    "name": "MARK1 wt Allele"
+  },
+  "C4723864": {
+    "rule": "A gene/language collision",
+    "name": "PLEKHG5 wt Allele"
+  },
+  "C4724040": {
+    "rule": "A gene/language collision",
+    "name": "Mandinka Language"
+  },
+  "C4724056": {
+    "rule": "A gene/language collision",
+    "name": "PARN wt Allele"
+  },
+  "C4724144": {
+    "rule": "A gene/language collision",
+    "name": "Newar Language"
+  },
+  "C4724440": {
+    "rule": "A gene/language collision",
+    "name": "Neapolitan Language"
+  },
+  "C4724731": {
+    "rule": "A gene/language collision",
+    "name": "Romani Language"
+  },
+  "C4724758": {
+    "rule": "A gene/language collision",
+    "name": "Haitian Creole Language"
+  },
+  "C4724760": {
+    "rule": "A gene/language collision",
+    "name": "Tonga Language (Tonga Islands)"
+  },
+  "C4761434": {
+    "rule": "A gene/language collision",
+    "name": "CD96 wt Allele"
+  },
+  "C5401218": {
+    "rule": "A gene/language collision",
+    "name": "ADA2 wt Allele"
+  },
+  "C5443869": {
+    "rule": "A gene/language collision",
+    "name": "CORO1A wt Allele"
+  },
+  "C5444202": {
+    "rule": "A gene/language collision",
+    "name": "OTULIN wt Allele"
+  },
+  "C5551050": {
+    "rule": "A gene/language collision",
+    "name": "PPT1 wt Allele"
+  },
+  "C5551061": {
+    "rule": "A gene/language collision",
+    "name": "BMP1 wt Allele"
+  },
+  "C5551206": {
+    "rule": "A gene/language collision",
+    "name": "TAMALIN wt Allele"
+  },
+  "C5551287": {
+    "rule": "A gene/language collision",
+    "name": "SSRP1 wt Allele"
+  },
+  "C5551289": {
+    "rule": "A gene/language collision",
+    "name": "SNAP91 wt Allele"
+  },
+  "C5575291": {
+    "rule": "A gene/language collision",
+    "name": "EIF6 wt Allele"
+  },
+  "C5575443": {
+    "rule": "A gene/language collision",
+    "name": "ACP2 wt Allele"
+  },
+  "C5575582": {
+    "rule": "A gene/language collision",
+    "name": "CA1 wt Allele"
+  }
+}

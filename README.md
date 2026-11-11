@@ -1,16 +1,26 @@
 # Ambient AI for Rehabilitation Documentation — SOAP Note Generation & Evaluation
 
-Code to generate and evaluate ambient generative-AI SOAP notes for the study
-**"Validation of Ambient Generative AI Models for Clinical Documentation in
-Rehabilitation Settings"** (submitted to *npj Digital Medicine*).
+Code for **"A Comprehensive Evaluation of Ambient AI for Clinical Documentation
+in Adult Rehabilitation"** (Zhao et al., submitted manuscript).
 
-The paper benchmarks seven systems (frontier, commercial-ambient, and open-weight
-biomedical) across 45 physical-, occupational-, and speech-language-therapy
-encounters. Its central methodological contribution is **fact-level, transcript-grounded**
-evaluation: every AI-generated claim is checked against both the therapist
-reference note *and* the original session transcript, which separates true
-fabrication from clinically valid content that the human note simply omitted.
-This repository contains the generation and evaluation pipeline behind those results.
+The study evaluates seven ambient AI systems on **153 full-length, recorded
+adult rehabilitation sessions** (Study 1: 45 encounters; Study 2: 108
+encounters), each paired with the note the treating therapist wrote. Notes are
+compared on lexical/semantic similarity, UMLS concept coverage, and atomic
+clinical claims. Every claim is then grounded against the session transcript
+as well as the therapist's note. This separates true fabrication from
+encounter-supported content the therapist simply did not record, and true
+omissions from documentation that was never spoken aloud.
+
+Headline results the code reproduces:
+
+- **Text similarity does not track factual recovery.** The system ranked first
+  on ROUGE-1, ROUGE-L and BERTScore recovered 13.8% of therapist-documented
+  claims; GPT-5 Pro recovered 56.7%.
+- **The therapist note is not complete ground truth.** 78.8% of AI-exclusive
+  claims were supported by the transcript; 21.2% were fabricated.
+- **Some documentation is not observable from audio.** 31.7% of the gold claims
+  that systems missed had no support anywhere in the recorded encounter.
 
 ---
 
@@ -18,45 +28,73 @@ This repository contains the generation and evaluation pipeline behind those res
 
 | Folder | Purpose |
 |---|---|
-| [`generation/`](generation) | Produce SOAP notes from transcripts/audio for each of the seven systems. |
-| [`evaluation/`](evaluation) | Conventional text-similarity metrics (ROUGE, BERTScore, Jaccard, readability) and UMLS concept coverage. |
-| [`analysis/`](analysis) | Atomic-claim decomposition, entailment, transcript grounding, CREOLA/TopicGPT categorization, and statistics. |
-| [`reporting/`](reporting) | Assemble the manuscript tables and figures. |
+| [`data_prep/`](data_prep) | Build the Study 2 dataset file from the raw transcripts and notes. |
+| [`generation/`](generation) | Generate SOAP notes for each of the seven systems. |
+| [`evaluation/`](evaluation) | ROUGE, BERTScore, readability; MetaMapLite/UMLS concept coverage. |
+| [`analysis/`](analysis) | Atomic-claim decomposition and entailment, transcript grounding, CREOLA/TopicGPT categorization, artifact-CUI audit, and the in-text statistics. |
+| [`reporting/`](reporting) | Render manuscript Tables 1–6 and supplementary tables. |
+| [`resources/`](resources) | `artifact_cuis.json`: the 198 audited MetaMapLite artifact CUIs (Methods). |
 | [`docs/`](docs) | [Pipeline & manuscript map](docs/PIPELINE.md) and [data formats](docs/DATA_FORMAT.md). |
-| [`example_data/`](example_data) | **Synthetic** encounters and generations so the pipeline runs without protected data. |
+| [`example_data/`](example_data) | **Synthetic** encounters and generations so the code runs without protected data. |
 
-A script-by-script mapping to every table and figure is in
+The script-by-script mapping to every table, figure, and in-text statistic is in
 **[docs/PIPELINE.md](docs/PIPELINE.md)**.
 
 ## Systems evaluated
 
-GPT-5-Pro · AWS HealthScribe · JSL Text2SOAP · MedGemma-27B-it ·
-Llama3-Med42-70B · Llama3-OpenBioLLM-8B · Asclepius-13B.
+| System | Category | Input | Prompt |
+|---|---|---|---|
+| GPT-5 Pro | Frontier general-purpose LLM | Cleaned transcript | Few-shot SOAP instruction |
+| AWS HealthScribe | Commercial ambient AI service | Original audio | None (no prompting interface) |
+| JSL Text2SOAP | Commercial ambient AI service | Cleaned transcript | Vendor system prompt |
+| MedGemma-27B-it | Biomedical open-weight LLM | Cleaned transcript | Zero-shot (examples removed) |
+| Llama3-Med42-70B | Biomedical open-weight LLM | Cleaned transcript | Zero-shot |
+| Llama3-OpenBioLLM-8B | Biomedical open-weight LLM | Cleaned transcript | Zero-shot |
+| Asclepius-Llama3-8B | Clinical-note-specialized LLM | Cleaned transcript | Zero-shot |
 
-## Data availability & ethics
+Model revisions, quantization, and context limits are in the paper (Table 9)
+and in [`generation/run_openweight.py`](generation/run_openweight.py).
 
-The study corpus (real diarized therapy transcripts and therapist reference
-notes) contains protected health information and is **not** included in this
-repository. Access is governed by the paper's *Data availability* statement.
-Everything under `example_data/` is fully synthetic and contains no patient
-information; it exists only to exercise the code paths and document the schemas.
+## Datasets
+
+| Corpus | Paper name | Code key | Encounters | Disciplines | Source study design |
+|---|---|---|---|---|---|
+| 1 | Study 1 | `encompass` | 45 sessions, 29 patients | 19 OT, 19 PT, 7 SLP | Implementation pilot embedded in usual care; 2–3 sessions/day of ~20 min |
+| 2 | Study 2 | `adapts` | 108 sessions, 16 patients | 102 OT, 6 PT | Phase 3 efficacy trial in addition to usual care; 1 session/day of ~45–60 min |
+
+Each encounter is a video-recorded inpatient rehabilitation session. Its audio
+was transcribed with AWS speech recognition and speaker diarization, then
+cleaned manually for readability. Each session is paired with the narrative
+note the treating therapist wrote during routine documentation. No system
+received the video channel.
+
+**Access.** The recordings, transcripts, therapist notes, model generations,
+and every cache derived from them contain protected health information and are
+**not** in this repository. They are held by the study team under University of
+Pittsburgh IRB STUDY25080111. Aggregated, non-identifiable data underlying the
+reported results are available from the corresponding author on reasonable
+request, subject to IRB approval and institutional data-sharing requirements.
+
+Approved users place the two dataset files at `data/json_dataset.json` and
+`data/adapts_dataset.json` (schema: [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md))
+and run the pipeline from there. Everything under `example_data/` is fully
+synthetic.
 
 ## Scope note
 
-The qualitative **LLM-as-a-judge** evaluation (main-text Table X and
-Supplementary Tables 5 & 7 — the 15-judge panel, empty-note probe, and
-Krippendorff's α) was developed as a separate component and lives in its own
-repository, cited in the paper's Code Availability statement. It is intentionally
-not duplicated here.
+The LLM-as-a-judge rubric evaluation (six candidate judges screened with a
+25-note degenerate-output probe; Krippendorff's α per dimension; Tables 7–8) was
+implemented with the **MedJUDGE** framework,
+<https://github.com/PittNAIL/MedJUDGE-Framework>, and is not duplicated here.
 
 ---
 
 ## Installation
 
-Python ≥ 3.11.
+Python ≥ 3.11 (analyses were run on Python 3.12).
 
 ```bash
-git clone https://github.com/<org>/rehab-ambient-soap.git
+git clone https://github.com/PittNAIL/rehab-ambient-soap.git
 cd rehab-ambient-soap
 
 python -m venv .venv
@@ -66,20 +104,21 @@ pip install -r requirements.txt      # core analysis stack
 # or, with uv:  uv sync
 ```
 
-The core install covers the text-similarity, claim-level, and transcript-grounding
-analyses (the bulk of the results). Concept extraction (MetaMapLite + a local UMLS
-index), local 4-bit generation (bitsandbytes/accelerate), JSL Text2SOAP
-(johnsnowlabs/pyspark), and AWS HealthScribe (boto3) are optional — see the
-comments in [`requirements.txt`](requirements.txt).
+The core install covers text similarity, claim-level evaluation, transcript
+grounding, table rendering, and statistics. The following are optional; see the
+comments in [`requirements.txt`](requirements.txt):
+
+- concept extraction (MetaMapLite plus a UMLS 2022AB index, licensed from the NLM);
+- local open-weight generation (torch, transformers, bitsandbytes; A100-class GPUs);
+- JSL Text2SOAP (a John Snow Labs license, Spark NLP);
+- AWS HealthScribe (boto3).
 
 ### Credentials
 
 Copy `.env.example` → `.env` (or `keys.example.json` → `keys.json`) and fill in
-your endpoints/keys. LLM-based scripts read these; nothing is hard-coded.
+your endpoints and keys. Nothing is hard-coded.
 
 ## Quickstart (synthetic data, no credentials, no GPU)
-
-Score the two synthetic generation files against their reference notes:
 
 ```bash
 python evaluation/conventional_text_metrics.py \
@@ -88,40 +127,39 @@ python evaluation/conventional_text_metrics.py \
   --filter empty-only
 ```
 
-This computes ROUGE-1/L, BERTScore, Jaccard, token counts, lexical entropy, and
-readability for the coherent example model and demonstrates how the degeneracy
-filter (`--filter degenerate`) drops the empty/soft-refusal/dialogue-leak outputs
-in `example_degenerate_model.json`. (BERTScore downloads `roberta-large` on first
-run.)
-
-The claim-level and grounding stages additionally require an LLM API key; see
-[docs/PIPELINE.md](docs/PIPELINE.md) for the full run order on real data.
+This scores the two synthetic generation files. `--filter degenerate` shows how
+degenerate outputs are excluded from the non-degenerate subset. BERTScore
+downloads `roberta-large` on first run.
 
 ## Reproducing the paper
 
-1. Assemble `data/json_dataset.json` (schema: [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md)).
-2. Generate notes → `metrics_test/soap_prompts/<model>.json` (Stage 1).
-3. Run Stages 2–7 (text metrics → concepts → claims → grounding → categories → stats).
-4. Assemble tables/figures (Stage 8).
+1. Place the two dataset files under `data/` (Stage 0).
+2. Generate notes for each system and corpus → `metrics_test/eval_<corpus>/` (Stage 1).
+3. Text metrics → concepts → claims → grounding → categories (Stages 2–6).
+4. Render the tables (Stage 7) and the in-text statistics (Stage 8):
+   `python analysis/paper_statistics.py`.
 
-Each stage, with exact commands and its manuscript table/figure, is in
-[docs/PIPELINE.md](docs/PIPELINE.md).
+Stages 7–8 make no LLM calls and run in seconds from the cached outputs. Exact
+commands are in [docs/PIPELINE.md](docs/PIPELINE.md).
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff). Please cite the *npj Digital Medicine* paper
-if you use this code.
+See [`CITATION.cff`](CITATION.cff).
 
 ## License
 
-[MIT](LICENSE).
+[MIT](LICENSE). The model weights and services evaluated have their own licenses;
+for example, Asclepius-Llama3-8B is CC-BY-NC-SA 4.0 (research use only), and
+MedGemma and Llama3-Med42 are gated.
 
 ## Acknowledgements
 
-The claim-decomposition/entailment pipeline reproduces and extends
-**FactEHR** (Munnangi et al., 2024). Content categorization adapts the
-**CREOLA** clinical-safety taxonomy (Asgari et al., *npj Digital Medicine*, 2025);
-topic modeling adapts **TopicGPT** (Pham et al., NAACL 2024); grounding builds on
-**DocLens** (Xie et al., ACL 2024) and the intrinsic/extrinsic hallucination
-framing of Maynez et al. (ACL 2020). Concepts are extracted with **MetaMapLite**
-(Demner-Fushman et al., 2017) against UMLS 2022AB.
+Supported by NIH awards R01LM014588 and R01HD117897. Computation used the
+University of Pittsburgh Center for Research Computing.
+
+Claim decomposition and entailment follow **FactEHR** (Munnangi et al., 2025).
+Content categorization adapts the **CREOLA** clinical-safety taxonomy (Asgari et
+al., *npj Digital Medicine*, 2025). Topic modeling adapts **TopicGPT** (Pham et
+al., NAACL 2024). Fabrication follows **DocLens** (Xie et al., ACL 2024) and the
+extrinsic-hallucination framing of Maynez et al. (ACL 2020). Concepts are
+extracted with **MetaMapLite** (Demner-Fushman et al., 2017) against UMLS 2022AB.

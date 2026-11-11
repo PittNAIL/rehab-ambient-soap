@@ -477,10 +477,20 @@ def _classify_once(
     raw = _call_llm(client, prompt, model, system_prompt=_SYS, temperature=temperature)
     if raw is None:
         return None
+    # Annotator passes run at temperature 0.7, so a malformed response is a real
+    # possibility on any call. Guard every way the parse can fail:
+    #   JSONDecodeError  - not valid JSON
+    #   RecursionError   - runaway nested array blows the decoder's stack
+    #   AttributeError   - valid JSON but a list/str, so .get() does not exist
+    # Any of these degrade to a SKIP for that encounter rather than killing the run.
     try:
-        return json.loads(raw).get("classifications", [])
-    except json.JSONDecodeError:
+        parsed = json.loads(raw)
+    except (json.JSONDecodeError, RecursionError, ValueError):
         return None
+    if not isinstance(parsed, dict):
+        return None
+    out = parsed.get("classifications", [])
+    return out if isinstance(out, list) else None
 
 
 def _adjudicate(
@@ -497,14 +507,28 @@ def _adjudicate(
     raw = _call_llm(client, prompt, model, system_prompt=_SYS_ADJUDICATE, temperature=0.0)
     if raw is None:
         return None
+    # Annotator passes run at temperature 0.7, so a malformed response is a real
+    # possibility on any call. Guard every way the parse can fail:
+    #   JSONDecodeError  - not valid JSON
+    #   RecursionError   - runaway nested array blows the decoder's stack
+    #   AttributeError   - valid JSON but a list/str, so .get() does not exist
+    # Any of these degrade to a SKIP for that encounter rather than killing the run.
     try:
-        return json.loads(raw).get("classifications", [])
-    except json.JSONDecodeError:
+        parsed = json.loads(raw)
+    except (json.JSONDecodeError, RecursionError, ValueError):
         return None
+    if not isinstance(parsed, dict):
+        return None
+    out = parsed.get("classifications", [])
+    return out if isinstance(out, list) else None
 
 
 def _build_lookup(classifications: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]:
-    return {c["fact"]: c for c in classifications if "fact" in c}
+    # isinstance check is load-bearing: a malformed pass can return a list of
+    # strings, and `"fact" in c` on a string is a substring test that can pass,
+    # after which c["fact"] raises TypeError and kills the whole run.
+    return {c["fact"]: c for c in classifications
+            if isinstance(c, dict) and "fact" in c}
 
 
 def classify_facts_dual(
